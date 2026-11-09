@@ -26,6 +26,7 @@ citas médicas entre pacientes, médicos y administradores.
 - Git
 
 ## Instalación y ejecución
+- Paso 0 (develop): verificar Node con node -v antes de instalar.
 ### Frontend
 ```bash
 cd citas-frontend
