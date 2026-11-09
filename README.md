@@ -26,7 +26,11 @@ citas médicas entre pacientes, médicos y administradores.
 - Git
 
 ## Instalación y ejecución
+<<<<<<< HEAD
 - Paso 0 (develop): verificar Node con node -v antes de instalar.
+=======
+- Paso 0 (fix): abrir CMD en la carpeta del proyecto antes de cualquier comando.
+>>>>>>> fix/conflicto-readme
 ### Frontend
 ```bash
 cd citas-frontend
@@ -41,7 +45,7 @@ Abrir http://localhost:5173 — usuarios de demostración:
 | Paciente | juan.martinez@correo.com | Paciente123* |
 | Médico | carlos.ramirez@clinica.com | Medico123* |
 | Administrador | admin@clinica.com | Admin123* |
-- Paso 0 (develop): verificar Node con node -v antes de instalar.
+
 ### Base de datos
 - **Opción A (scripts, en orden):** ejecutar `database/01_DDL_creacion_bd.sql` hasta
   `database/05_validacion_integridad.sql` en un cliente MySQL.
