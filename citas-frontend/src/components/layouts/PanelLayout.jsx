@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../hooks/useAuth.js';
 
 // Menús según rol (RBAC del mapa de navegación)
 const menusPorRol = {
@@ -8,10 +8,13 @@ const menusPorRol = {
     { to: '/paciente/agendar', label: 'Agendar cita' },
     { to: '/paciente/mis-citas', label: 'Mis citas' },
   ],
+  medico: [
+    { to: '/medico', label: 'Agenda del médico', fin: true },
+  ],
   administrador: [
     { to: '/admin/medicos', label: 'Gestión de médicos' },
+    { to: '/admin/citas', label: 'Gestión de citas' },
   ],
-  medico: [], // Panel médico previsto en el mapa; llega en la iteración con backend
 };
 
 export default function PanelLayout() {
@@ -48,11 +51,6 @@ export default function PanelLayout() {
               </li>
             </ul>
           </nav>
-          {menu.length === 0 && (
-            <p className="ayuda-campo" style={{ color: '#cbe7e7' }}>
-              Módulo {sesion.rol} previsto en el mapa de navegación; llega en la iteración con backend.
-            </p>
-          )}
         </aside>
         <div className="panel-contenido" id="contenido-panel">
           <header className="panel-encabezado">

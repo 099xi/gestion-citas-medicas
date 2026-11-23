@@ -1,20 +1,18 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../hooks/useAuth.js';
+import { useDatos } from '../../hooks/useDatos.js';
 import Card from '../../components/ui/Card.jsx';
 import BadgeEstado from '../../components/ui/BadgeEstado.jsx';
-import { citas, pacientes, medicos, nombreConsultorio, nombreEspecialidad } from '../../data/mockData.js';
 import { hoyISO, formatoFecha } from '../../utils/fechas.js';
 
 export default function DashboardPaciente() {
   const { sesion } = useAuth();
-  // Mock: el paciente autenticado se identifica por su correo (Juan Martínez = id 1)
-  const idPaciente = pacientes.find((p) => p.correo === sesion.correo)?.id_paciente ?? 1;
+  const { pacientePorCorreo, citasDePaciente, medicos, nombreConsultorio, nombreEspecialidad, ESTADOS_ACTIVOS } = useDatos();
+  const paciente = pacientePorCorreo(sesion.correo);
   const hoy = hoyISO();
 
-  const mias = citas.filter((c) => c.id_paciente === idPaciente);
-  const proximas = mias
-    .filter((c) => c.fecha >= hoy && (c.estado === 'Programada' || c.estado === 'Confirmada'))
-    .sort((a, b) => (a.fecha + a.hora_inicio).localeCompare(b.fecha + b.hora_inicio));
+  const mias = paciente ? citasDePaciente(paciente.id_paciente) : [];
+  const proximas = mias.filter((c) => c.fecha >= hoy && ESTADOS_ACTIVOS.includes(c.estado));
   const atendidas = mias.filter((c) => c.estado === 'Atendida');
   const recordatorios = mias.filter((c) => c.estado === 'Confirmada' && c.fecha >= hoy);
   const proxima = proximas[0];

@@ -1,7 +1,9 @@
+import { desplazarDias } from '../utils/fechas.js';
+
 // =====================================================================
 // Datos de prueba (mock) coherentes con la base gestion_citas_medicas
-// de la Evidencia 2. La Evidencia 3 aún no consume servicios: estos
-// datos simulan el backend para que la interfaz sea navegable.
+// de la Evidencia 2. Simulan el backend: la aplicación los carga en el
+// estado compartido (DatosContext) y las vistas nunca los modifican.
 // =====================================================================
 
 export const especialidades = [
@@ -45,41 +47,21 @@ export const usuarios = [
   { correo: 'admin@clinica.com',          password: 'Admin123*',    rol: 'administrador', nombre: 'Administrador del sistema' },
 ];
 
-// Fechas relativas a hoy: la demo siempre se ve "viva"
-const desplazarDia = (offset) => {
-  const f = new Date();
-  f.setDate(f.getDate() + offset);
-  return f.toISOString().slice(0, 10);
-};
+// Fechas relativas a hoy (fecha local, ver utils/fechas.js): la demo siempre se ve "viva"
 
 // Coherencia con la Evidencia 2: la cita 2 no existe porque fue
 // eliminada en el Script 04 (DELETE con ON DELETE CASCADE).
 export const citas = [
-  { id_cita: 1,  id_paciente: 1, id_medico: 1, id_consultorio: 1, fecha: desplazarDia(-10), hora_inicio: '08:30:00', hora_fin: '09:00:00', motivo: 'Dolor lumbar',               estado: 'Atendida' },
-  { id_cita: 3,  id_paciente: 3, id_medico: 6, id_consultorio: 2, fecha: desplazarDia(-20), hora_inicio: '10:00:00', hora_fin: '10:30:00', motivo: 'Consulta general de rutina', estado: 'Atendida' },
-  { id_cita: 4,  id_paciente: 1, id_medico: 1, id_consultorio: 1, fecha: desplazarDia(0),   hora_inicio: '08:00:00', hora_fin: '08:30:00', motivo: 'Consulta general de rutina', estado: 'Confirmada' },
-  { id_cita: 5,  id_paciente: 3, id_medico: 2, id_consultorio: 2, fecha: desplazarDia(1),   hora_inicio: '10:00:00', hora_fin: '10:30:00', motivo: 'Control de crecimiento',     estado: 'Confirmada' },
-  { id_cita: 6,  id_paciente: 8, id_medico: 1, id_consultorio: 1, fecha: desplazarDia(2),   hora_inicio: '16:00:00', hora_fin: '16:30:00', motivo: 'Consulta general',           estado: 'Confirmada' },
-  { id_cita: 7,  id_paciente: 2, id_medico: 3, id_consultorio: 3, fecha: desplazarDia(3),   hora_inicio: '09:00:00', hora_fin: '09:30:00', motivo: 'Chequeo cardiológico',       estado: 'Programada' },
-  { id_cita: 8,  id_paciente: 4, id_medico: 5, id_consultorio: 1, fecha: desplazarDia(4),   hora_inicio: '11:00:00', hora_fin: '11:30:00', motivo: 'Valoración ginecológica',    estado: 'Programada' },
-  { id_cita: 10, id_paciente: 1, id_medico: 4, id_consultorio: 2, fecha: desplazarDia(7),   hora_inicio: '08:00:00', hora_fin: '08:30:00', motivo: 'Consulta dermatológica',     estado: 'Programada' },
-  { id_cita: 11, id_paciente: 2, id_medico: 1, id_consultorio: 1, fecha: desplazarDia(8),   hora_inicio: '09:30:00', hora_fin: '10:00:00', motivo: 'Seguimiento tratamiento',    estado: 'Programada' },
+  { id_cita: 1,  id_paciente: 1, id_medico: 1, id_consultorio: 1, fecha: desplazarDias(-10), hora_inicio: '08:30:00', hora_fin: '09:00:00', motivo: 'Dolor lumbar',               estado: 'Atendida' },
+  { id_cita: 3,  id_paciente: 3, id_medico: 6, id_consultorio: 2, fecha: desplazarDias(-20), hora_inicio: '10:00:00', hora_fin: '10:30:00', motivo: 'Consulta general de rutina', estado: 'Atendida' },
+  { id_cita: 4,  id_paciente: 1, id_medico: 1, id_consultorio: 1, fecha: desplazarDias(0),   hora_inicio: '08:00:00', hora_fin: '08:30:00', motivo: 'Consulta general de rutina', estado: 'Confirmada' },
+  { id_cita: 5,  id_paciente: 3, id_medico: 2, id_consultorio: 2, fecha: desplazarDias(1),   hora_inicio: '10:00:00', hora_fin: '10:30:00', motivo: 'Control de crecimiento',     estado: 'Confirmada' },
+  { id_cita: 6,  id_paciente: 8, id_medico: 1, id_consultorio: 1, fecha: desplazarDias(2),   hora_inicio: '16:00:00', hora_fin: '16:30:00', motivo: 'Consulta general',           estado: 'Confirmada' },
+  { id_cita: 7,  id_paciente: 2, id_medico: 3, id_consultorio: 3, fecha: desplazarDias(3),   hora_inicio: '09:00:00', hora_fin: '09:30:00', motivo: 'Chequeo cardiológico',       estado: 'Programada' },
+  { id_cita: 8,  id_paciente: 4, id_medico: 5, id_consultorio: 1, fecha: desplazarDias(4),   hora_inicio: '11:00:00', hora_fin: '11:30:00', motivo: 'Valoración ginecológica',    estado: 'Programada' },
+  { id_cita: 10, id_paciente: 1, id_medico: 4, id_consultorio: 2, fecha: desplazarDias(7),   hora_inicio: '08:00:00', hora_fin: '08:30:00', motivo: 'Consulta dermatológica',     estado: 'Programada' },
+  { id_cita: 11, id_paciente: 2, id_medico: 1, id_consultorio: 1, fecha: desplazarDias(8),   hora_inicio: '09:30:00', hora_fin: '10:00:00', motivo: 'Seguimiento tratamiento',    estado: 'Programada' },
 ];
 
 // Horarios del wireframe "Agendar cita"
 export const horariosDisponibles = ['08:00', '09:30', '11:00', '14:00', '15:30'];
-
-// Utilidades de lectura para las vistas
-export const nombreMedico = (id) => {
-  const m = medicos.find((x) => x.id_medico === id);
-  return m ? `${m.nombre} ${m.apellido}` : '—';
-};
-export const nombreEspecialidad = (id) => especialidades.find((x) => x.id_especialidad === id)?.nombre ?? '—';
-export const nombreConsultorio = (id) => consultorios.find((x) => x.id_consultorio === id)?.nombre ?? '—';
-export const citasDePaciente = (idPaciente) =>
-  citas.filter((c) => c.id_paciente === idPaciente).sort((a, b) => a.fecha.localeCompare(b.fecha));
-
-// Validaciones de unicidad (RF-03 del prototipo)
-export const documentoRegistrado = (doc) => pacientes.some((p) => p.documento === doc);
-export const correoRegistrado = (correo) =>
-  pacientes.some((p) => p.correo === correo) || usuarios.some((u) => u.correo === correo);

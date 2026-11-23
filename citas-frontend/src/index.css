@@ -120,3 +120,7 @@ tbody tr:hover { background: var(--primario-claro); }
   .form-fila { grid-template-columns: 1fr; }
   .hero { padding-top: 1.5rem; }
 }
+/* --- Evidencia 6: tabla vacía y rejilla de filtros --- */
+.tabla-vacia { text-align: center; color: var(--texto-suave); font-style: italic; padding: 1.25rem; }
+.filtros { display: grid; grid-template-columns: repeat(2, minmax(0, 320px)); gap: 0 1rem; margin-bottom: 1rem; }
+@media (max-width: 720px) { .filtros { grid-template-columns: 1fr; } }

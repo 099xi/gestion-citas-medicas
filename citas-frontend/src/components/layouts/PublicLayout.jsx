@@ -19,7 +19,7 @@ export default function PublicLayout() {
         <Outlet />
       </main>
       <footer className="pie-publico">
-        <p>SENA · ADSO · Ficha 3336056 — Sistema de Gestión de Citas Médicas · Prototipo Evidencia 3</p>
+        <p>SENA · ADSO · Ficha 3336056 — Sistema de Gestión de Citas Médicas · Prototipo funcional · Evidencia 6</p>
       </footer>
     </>
   );

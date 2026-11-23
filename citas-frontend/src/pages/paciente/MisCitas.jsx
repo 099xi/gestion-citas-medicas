@@ -1,60 +1,46 @@
 import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../hooks/useAuth.js';
+import { useDatos } from '../../hooks/useDatos.js';
 import DataTable from '../../components/ui/DataTable.jsx';
 import BadgeEstado from '../../components/ui/BadgeEstado.jsx';
 import Button from '../../components/ui/Button.jsx';
-import { citas, pacientes, medicos, nombreMedico, nombreEspecialidad, nombreConsultorio } from '../../data/mockData.js';
+import Aviso from '../../components/ui/Aviso.jsx';
+import AccionConfirmable from '../../components/ui/AccionConfirmable.jsx';
 import { formatoFecha } from '../../utils/fechas.js';
 
 export default function MisCitas() {
   const { sesion } = useAuth();
-  const idPaciente = pacientes.find((p) => p.correo === sesion.correo)?.id_paciente ?? 1;
-  const [cancelando, setCancelando] = useState(null);
+  const {
+    pacientePorCorreo, citasDePaciente, cambiarEstadoCita,
+    nombreMedico, especialidadDeMedico, nombreConsultorio, ESTADOS_ACTIVOS,
+  } = useDatos();
   const [abierta, setAbierta] = useState(null);
   const [aviso, setAviso] = useState('');
 
-  const mias = citas
-    .filter((c) => c.id_paciente === idPaciente)
-    .sort((a, b) => (a.fecha + a.hora_inicio).localeCompare(b.fecha + b.hora_inicio));
+  const paciente = pacientePorCorreo(sesion.correo);
+  const mias = paciente ? citasDePaciente(paciente.id_paciente) : [];
 
-  const cancelar = (id) => {
-    const cita = citas.find((c) => c.id_cita === id);
-    if (cita) cita.estado = 'Cancelada'; // Mock: sería un PATCH al backend
-    setCancelando(null);
+  const cancelar = (cita) => {
+    cambiarEstadoCita(cita.id_cita, 'Cancelada'); // Mock: sería un PATCH al backend
     setAviso(`La cita del ${formatoFecha(cita.fecha)} fue cancelada correctamente.`);
   };
 
   const columnas = [
     { campo: 'fecha', titulo: 'Fecha', render: (c) => formatoFecha(c.fecha) },
     { campo: 'medico', titulo: 'Médico', render: (c) => nombreMedico(c.id_medico) },
-    {
-      campo: 'especialidad', titulo: 'Especialidad',
-      render: (c) => {
-        const m = medicos.find((x) => x.id_medico === c.id_medico);
-        return m ? nombreEspecialidad(m.id_especialidad) : '—';
-      },
-    },
+    { campo: 'especialidad', titulo: 'Especialidad', render: (c) => especialidadDeMedico(c.id_medico) },
     { campo: 'estado', titulo: 'Estado', render: (c) => <BadgeEstado estado={c.estado} /> },
     {
       campo: 'accion', titulo: 'Acción',
-      render: (c) => {
-        if (c.estado === 'Programada' || c.estado === 'Confirmada') {
-          return cancelando === c.id_cita ? (
-            <span className="hero-acciones">
-              <Button variante="peligro" onClick={() => cancelar(c.id_cita)}>Sí, cancelar</Button>
-              <Button variante="secundario" onClick={() => setCancelando(null)}>No</Button>
-            </span>
-          ) : (
-            <Button
-              variante="secundario"
-              aria-label={`Cancelar cita del ${formatoFecha(c.fecha)}`}
-              onClick={() => { setCancelando(c.id_cita); setAviso(''); }}
-            >
-              Cancelar
-            </Button>
-          );
-        }
-        return (
+      render: (c) =>
+        ESTADOS_ACTIVOS.includes(c.estado) ? (
+          <AccionConfirmable
+            etiqueta="Cancelar"
+            etiquetaConfirmar="Sí, cancelar"
+            ariaLabel={`Cancelar cita del ${formatoFecha(c.fecha)}`}
+            alConfirmar={() => cancelar(c)}
+          />
+        ) : (
           <Button
             variante="secundario"
             aria-label={`Ver detalle de la cita del ${formatoFecha(c.fecha)}`}
@@ -62,22 +48,22 @@ export default function MisCitas() {
           >
             {abierta === c.id_cita ? 'Ocultar' : 'Ver'}
           </Button>
-        );
-      },
+        ),
     },
   ];
 
-  const detalle = abierta ? citas.find((c) => c.id_cita === abierta) : null;
+  const detalle = abierta ? mias.find((c) => c.id_cita === abierta) : null;
 
   return (
     <>
       <h1>Mis citas</h1>
-      {aviso && <div className="aviso aviso--exito" role="status">{aviso}</div>}
+      {aviso && <Aviso>{aviso}</Aviso>}
       <DataTable
         caption="Historial y citas próximas del paciente autenticado"
         columnas={columnas}
         filas={mias}
         clave={(c) => c.id_cita}
+        vacio="Aún no tienes citas registradas."
       />
       {detalle && (
         <section className="tarjeta" style={{ marginTop: '1rem' }} aria-label="Detalle de la cita">

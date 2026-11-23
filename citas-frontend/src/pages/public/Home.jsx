@@ -7,8 +7,8 @@ export default function Home() {
         <h1 id="titulo-hero">Sistema de Gestión de Citas Médicas</h1>
         <p>
           Agenda, consulta y gestiona tus citas médicas en línea. Prototipo funcional
-          construido en React (Evidencia 3); por ahora opera con datos de prueba
-          coherentes con la base de datos del proyecto.
+          construido en React con módulos para paciente, médico y administrador; por ahora
+          opera con datos de prueba coherentes con la base de datos del proyecto.
         </p>
         <div className="hero-acciones">
           <Link className="boton" to="/login">Iniciar sesión</Link>

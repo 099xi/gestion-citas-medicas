@@ -1,14 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../hooks/useAuth.js';
+import { useDatos } from '../../hooks/useDatos.js';
 import FormField from '../../components/ui/FormField.jsx';
 import Button from '../../components/ui/Button.jsx';
-import { especialidades, medicos, citas, horariosDisponibles, pacientes } from '../../data/mockData.js';
-import { hoyISO, sumarMinutos } from '../../utils/fechas.js';
+import Aviso from '../../components/ui/Aviso.jsx';
+import { hoyISO } from '../../utils/fechas.js';
 
 export default function AgendarCita() {
   const { sesion } = useAuth();
-  const idPaciente = pacientes.find((p) => p.correo === sesion.correo)?.id_paciente ?? 1;
+  const { especialidades, medicosActivosDe, horariosDisponibles, horariosOcupados, pacientePorCorreo, agendarCita } = useDatos();
+  const paciente = pacientePorCorreo(sesion.correo);
 
   const [especialidadId, setEspecialidadId] = useState('');
   const [medicoId, setMedicoId] = useState('');
@@ -19,19 +21,9 @@ export default function AgendarCita() {
   const [exito, setExito] = useState('');
 
   // Solo médicos ACTIVOS de la especialidad elegida
-  const medicosDeEspecialidad = useMemo(
-    () => medicos.filter((m) => m.estado === 'Activo' && String(m.id_especialidad) === especialidadId),
-    [especialidadId]
-  );
-
-  // RF-07: bloques ya ocupados por ese médico en esa fecha (canceladas no cuentan)
-  const horariosOcupados = useMemo(
-    () =>
-      citas
-        .filter((c) => String(c.id_medico) === medicoId && c.fecha === fecha && c.estado !== 'Cancelada')
-        .map((c) => c.hora_inicio.slice(0, 5)),
-    [medicoId, fecha]
-  );
+  const medicosDeEspecialidad = especialidadId ? medicosActivosDe(Number(especialidadId)) : [];
+  // RF-07: bloques ya ocupados por ese médico en esa fecha
+  const ocupados = medicoId && fecha ? horariosOcupados(Number(medicoId), fecha) : [];
 
   const validar = () => {
     const e = {};
@@ -49,24 +41,15 @@ export default function AgendarCita() {
     const nuevos = validar();
     setErrores(nuevos);
     if (Object.keys(nuevos).length > 0) return;
-    // RF-08: doble verificación de doble agendamiento
-    if (horariosOcupados.includes(hora)) {
-      setErrores({ hora: 'Ese bloque ya fue ocupado por otro paciente (RF-08).' });
+
+    // El contexto vuelve a verificar el doble agendamiento (RF-08) y registra la cita
+    const resultado = agendarCita({
+      idPaciente: paciente.id_paciente, idMedico: Number(medicoId), fecha, hora, motivo,
+    });
+    if (!resultado.ok) {
+      setErrores({ hora: resultado.error });
       return;
     }
-    // Mock: registramos la cita en el arreglo compartido (simula el POST al backend)
-    const nuevoId = Math.max(...citas.map((c) => c.id_cita)) + 1;
-    citas.push({
-      id_cita: nuevoId,
-      id_paciente: idPaciente,
-      id_medico: Number(medicoId),
-      id_consultorio: (Number(medicoId) % 3) + 1,
-      fecha,
-      hora_inicio: `${hora}:00`,
-      hora_fin: sumarMinutos(hora, 30),
-      motivo: motivo.trim() || 'Consulta general',
-      estado: 'Programada',
-    });
     setExito(`Cita registrada para el ${fecha} a las ${hora}. Ya puedes verla en Mis citas.`);
     setHora('');
     setMotivo('');
@@ -80,9 +63,9 @@ export default function AgendarCita() {
       </p>
 
       {exito && (
-        <div className="aviso aviso--exito" role="status">
+        <Aviso>
           {exito} <Link to="/paciente/mis-citas">Ir a Mis citas</Link>.
-        </div>
+        </Aviso>
       )}
 
       <form onSubmit={enviar} noValidate>
@@ -112,7 +95,7 @@ export default function AgendarCita() {
             <label id="etiqueta-hora">Hora disponible</label>
             <div className="bloques-horario" role="group" aria-labelledby="etiqueta-hora">
               {horariosDisponibles.map((h) => {
-                const ocupado = horariosOcupados.includes(h);
+                const ocupado = ocupados.includes(h);
                 return (
                   <button
                     key={h}

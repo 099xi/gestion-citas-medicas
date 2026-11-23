@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import FormField from '../../components/ui/FormField.jsx';
 import Button from '../../components/ui/Button.jsx';
-
-const CORREO_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+import { correoValido } from '../../utils/validaciones.js';
 
 export default function Recuperar() {
   const [correo, setCorreo] = useState('');
@@ -17,7 +16,7 @@ export default function Recuperar() {
       setEnviado(false);
       return;
     }
-    if (!CORREO_RE.test(correo.trim())) {
+    if (!correoValido(correo)) {
       setError('Formato de correo inválido (ej.: nombre@dominio.com).');
       setEnviado(false);
       return;

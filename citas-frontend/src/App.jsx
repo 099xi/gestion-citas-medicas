@@ -9,7 +9,9 @@ import Recuperar from './pages/public/Recuperar.jsx';
 import DashboardPaciente from './pages/paciente/DashboardPaciente.jsx';
 import AgendarCita from './pages/paciente/AgendarCita.jsx';
 import MisCitas from './pages/paciente/MisCitas.jsx';
+import AgendaMedico from './pages/medico/AgendaMedico.jsx';
 import GestionMedicos from './pages/admin/GestionMedicos.jsx';
+import GestionCitas from './pages/admin/GestionCitas.jsx';
 
 export default function App() {
   return (
@@ -24,7 +26,7 @@ export default function App() {
       <Route
         path="/paciente"
         element={
-          <RutaProtegida roles={['paciente', 'medico']}>
+          <RutaProtegida roles={['paciente']}>
             <PanelLayout />
           </RutaProtegida>
         }
@@ -35,6 +37,17 @@ export default function App() {
       </Route>
 
       <Route
+        path="/medico"
+        element={
+          <RutaProtegida roles={['medico']}>
+            <PanelLayout />
+          </RutaProtegida>
+        }
+      >
+        <Route index element={<AgendaMedico />} />
+      </Route>
+
+      <Route
         path="/admin"
         element={
           <RutaProtegida roles={['administrador']}>
@@ -42,7 +55,9 @@ export default function App() {
           </RutaProtegida>
         }
       >
+        <Route index element={<Navigate to="medicos" replace />} />
         <Route path="medicos" element={<GestionMedicos />} />
+        <Route path="citas" element={<GestionCitas />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

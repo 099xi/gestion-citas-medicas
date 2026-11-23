@@ -1,4 +1,4 @@
-export default function DataTable({ caption, columnas, filas, clave }) {
+export default function DataTable({ caption, columnas, filas, clave, vacio = 'No hay registros para mostrar.' }) {
   return (
     <div className="tabla-contenedor">
       <table>
@@ -11,6 +11,11 @@ export default function DataTable({ caption, columnas, filas, clave }) {
           </tr>
         </thead>
         <tbody>
+          {filas.length === 0 && (
+            <tr>
+              <td className="tabla-vacia" colSpan={columnas.length}>{vacio}</td>
+            </tr>
+          )}
           {filas.map((fila, i) => (
             <tr key={clave ? clave(fila) : i}>
               {columnas.map((col) => (
