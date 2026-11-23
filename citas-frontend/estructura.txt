@@ -1,0 +1,80 @@
+Listado de rutas de carpetas
+El número de serie del volumen es 6C49-3715
+C:\PROYECT FROM HERO\GESTION-CITAS-MEDICAS\CITAS-FRONTEND\SRC
+¦   App.jsx
+¦   index.css
+¦   main.jsx
+¦   
++---components
+¦   ¦   RutaProtegida.jsx
+¦   ¦   
+¦   +---layouts
+¦   ¦       PanelLayout.jsx
+¦   ¦       PublicLayout.jsx
+¦   ¦       
+¦   +---ui
+¦           BadgeEstado.jsx
+¦           Button.jsx
+¦           Card.jsx
+¦           DataTable.jsx
+¦           FormField.jsx
+¦           
++---context
+¦       AuthContext.jsx
+¦       
++---data
+¦       mockData.js
+¦       
++---evidencias
+¦       fig01.png
+¦       fig02.png
+¦       fig03.png
+¦       fig04.png
+¦       fig05.png
+¦       fig06.png
+¦       fig07a.png
+¦       fig07b.png
+¦       fig08.png
+¦       fig09.png
+¦       fig10.png
+¦       fig11.png
+¦       fig12.png
+¦       fig13.png
+¦       fig14.png
+¦       fig15.png
+¦       fig16.png
+¦       fig17.png
+¦       fig18.png
+¦       fig19.png
+¦       fig20.png
+¦       fig21.png
+¦       fig22.png
+¦       fig23.png
+¦       fig24.png
+¦       fig25.png
+¦       fig26.png
+¦       fig27.png
+¦       fig28.png
+¦       fig29.png
+¦       fig30.png
+¦       
++---pages
+¦   ¦   Placeholder.jsx
+¦   ¦   
+¦   +---admin
+¦   ¦       GestionMedicos.jsx
+¦   ¦       
+¦   +---paciente
+¦   ¦       AgendarCita.jsx
+¦   ¦       DashboardPaciente.jsx
+¦   ¦       MisCitas.jsx
+¦   ¦       
+¦   +---public
+¦           Home.jsx
+¦           Login.jsx
+¦           Recuperar.jsx
+¦           Registro.jsx
+¦           
++---utils
+        fechas.js
+        
