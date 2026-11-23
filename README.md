@@ -8,7 +8,7 @@ citas médicas entre pacientes, médicos y administradores.
 
 ## Stack tecnológico
 - **Base de datos:** MySQL 8 (InnoDB), base `gestion_citas_medicas`
-- **Frontend:** React + Vite + React Router (datos de prueba en esta etapa)
+- **Frontend:** React + Vite + React Router, estado compartido con Context + `useReducer` (datos de prueba en esta etapa)
 - **Backend:** Node.js (planeado para la siguiente iteración)
 - **Versionamiento:** Git + GitHub — ramas `main` / `develop` / `feature/*` / `fix/*`,
   mensajes con Conventional Commits
@@ -16,9 +16,21 @@ citas médicas entre pacientes, médicos y administradores.
 ## Estructura del repositorio
 | Carpeta | Contenido |
 |---|---|
-| `citas-frontend/` | Aplicación React (paneles público, paciente y administrador) |
+| `citas-frontend/` | Aplicación React (paneles público, paciente, médico y administrador) |
 | `database/` | Scripts SQL 01–05 y respaldo de la base (Evidencia 2) |
 | `docs/` | Modelo relacional, documentos técnicos y de validación |
+
+## Módulos del frontend
+| Rol | Módulos |
+|---|---|
+| Público | Inicio, inicio de sesión, registro de pacientes, recuperación de contraseña |
+| Paciente | Panel, agendar cita (especialidad → médico → fecha → hora), mis citas con cancelación |
+| Médico | Agenda del día y próximas citas; confirmar y marcar citas como atendidas |
+| Administrador | Gestión de médicos (alta, activar/inactivar) y gestión de todas las citas con filtros |
+
+El estado compartido vive en `src/context/` (`DatosContext` con `useReducer`), la lógica
+de formularios en `src/hooks/`, las reglas de validación en `src/utils/validaciones.js` y
+los componentes reutilizables en `src/components/ui/`.
 
 ## Requisitos
 - Node.js 18 o superior (probado con v26.5.1)
@@ -26,11 +38,8 @@ citas médicas entre pacientes, médicos y administradores.
 - Git
 
 ## Instalación y ejecución
-<<<<<<< HEAD
-- Paso 0 (develop): verificar Node con node -v antes de instalar.
-=======
-- Paso 0 (fix): abrir CMD en la carpeta del proyecto antes de cualquier comando.
->>>>>>> fix/conflicto-readme
+- Abrir CMD en la carpeta del proyecto antes de cualquier comando.
+- Verificar Node con `node -v` antes de instalar.
 ### Frontend
 ```bash
 cd citas-frontend
@@ -60,4 +69,6 @@ Abrir http://localhost:5173 — usuarios de demostración:
 ## Documentación
 En `docs/`: modelo relacional normalizado a 3FN, documento técnico de la base de
 datos, documento de validación del frontend frente al prototipo, mapa de
-navegación y prototipo aprobado.
+navegación, prototipo aprobado, la lista de chequeo de la Evidencia 6
+(`Evidencia6_Lista_de_chequeo.pdf`) y el script de pruebas funcionales que la respalda
+(`pruebas/prueba_frontend.py`).
